@@ -9,7 +9,6 @@ package nl.logius.resource.pp.example;
 
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.InputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -21,6 +20,7 @@ import nl.logius.resource.pp.key.EncryptedVerifiers;
 import nl.logius.resource.pp.key.IdentityDecryptKey;
 import nl.logius.resource.pp.key.PseudonymClosingKey;
 import nl.logius.resource.pp.key.PseudonymDecryptKey;
+import org.apache.commons.io.FileUtils;
 
 public class keyUtil {
 	
@@ -41,7 +41,7 @@ public class keyUtil {
 	private void getIdentityKeys()
 	{
         // Convert P7 key to PEM
-        try (final InputStream is = new FileInputStream("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "p7\\ID-4.p7")) {
+        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/ID-4.p7")) {
             String identityKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
             decryptKey = DecryptKey.fromPem(identityKeyPem, IdentityDecryptKey.class);
@@ -55,7 +55,7 @@ public class keyUtil {
 	
 	private void getPseudoKeys()
 	{   
-        try (final InputStream is = new FileInputStream("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "p7\\PD-4.p7")) {
+        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/PD-4.p7")) {
         	String pseudoKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
         	pDecryptKey = DecryptKey.fromPem(pseudoKeyPem, PseudonymDecryptKey.class);
@@ -66,7 +66,7 @@ public class keyUtil {
 			// TODO: handle exception
 		}
         
-        try (final InputStream is = new FileInputStream("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "p7\\PC-4.p7")) {
+        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/PC-4.p7")) {
         	String pseudoClosingKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
         	pClosingKey = DecryptKey.fromPem(pseudoClosingKeyPem, PseudonymClosingKey.class);
@@ -77,16 +77,10 @@ public class keyUtil {
 	}
 	
 	private static PrivateKey getPrivateKey() throws Exception {
-		
-		File file = new File("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "private.p8");
-    	//init array with file length
-    	byte[] bytesArray = new byte[(int) file.length()];
+			File file = new File(main.class.getClassLoader().getResource("private.p8").getFile());
+    	byte[] bytesArray = FileUtils.readFileToByteArray(file);
 
-    	FileInputStream fis = new FileInputStream(file);
-    	fis.read(bytesArray); //read file into bytes[]
-    	fis.close();
-		
-        return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(bytesArray));
+      return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(bytesArray));
     }
 		
 	public IdentityDecryptKey getDecryptKey()

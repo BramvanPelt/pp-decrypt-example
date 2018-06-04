@@ -7,15 +7,15 @@
 
 package nl.logius.resource.pp.example;
 
+import java.io.File;
 import java.lang.reflect.*;
-import java.nio.file.Files;
-import java.nio.file.Paths;
 import java.security.Security;
 import java.util.Map;
 
 import javax.crypto.Cipher;
 
 import nl.logius.resource.pp.util.DecryptUtil;
+import org.apache.commons.io.FileUtils;
 
 public class main {
 	
@@ -36,8 +36,10 @@ public class main {
 			keyUtil keys = new keyUtil(); 
 			
 			//simuleer een EncryptedID (ei) en EncryptedPseudonym (ep)
-			String ei = new String ( Files.readAllBytes( Paths.get("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "signed\\900095222-2-4-I.txt") ) );
-			String ep = new String ( Files.readAllBytes( Paths.get("F:\\workspace\\PP-Decrypt_ExamplePackage\\bin\\resources\\"+ "signed\\900095222-2-4-P.txt") ) );
+      File eiFile = new File(main.class.getClassLoader().getResource("signed/900095222-2-4-I.txt").getFile());
+      String ei = FileUtils.readFileToString(eiFile, "UTF-8");
+      File epFile = new File(main.class.getClassLoader().getResource("signed/900095222-2-4-P.txt").getFile());
+			String ep = FileUtils.readFileToString(epFile, "UTF-8");
 			
 			//Pre-load complete, Decrypt de ei en ep
 			String simBsn = DecryptUtil.getIdentity(ei,keys.getDecryptKey(), keys.getVerifiers());
