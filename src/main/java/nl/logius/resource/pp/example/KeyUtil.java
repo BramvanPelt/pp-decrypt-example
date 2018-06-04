@@ -22,7 +22,7 @@ import nl.logius.resource.pp.key.PseudonymClosingKey;
 import nl.logius.resource.pp.key.PseudonymDecryptKey;
 import org.apache.commons.io.FileUtils;
 
-public class keyUtil {
+public class KeyUtil {
 	
 	private IdentityDecryptKey decryptKey;
 	private EncryptedVerifiers verifiers;
@@ -32,7 +32,7 @@ public class keyUtil {
 	private String IDENTITY_POINT = "AmUppru04ghsI/FvbvV59eoX3lCUWlMAZKu1pPdlvixch5avV+aFwQg=";
 	private String PSEUDONYM_POINT = "A9GtKDUn++nl2NWtN4F/2id1gmBhxn4I6Qr9BfeMN+fjNuXGvE79qHc=";
 	
-	public keyUtil()
+	public KeyUtil()
 	{
          getIdentityKeys();
          getPseudoKeys();
@@ -41,7 +41,7 @@ public class keyUtil {
 	private void getIdentityKeys()
 	{
         // Convert P7 key to PEM
-        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/ID-4.p7")) {
+        try (final InputStream is = KeyUtil.class.getResourceAsStream("/p7/ID-4.p7")) {
             String identityKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
             decryptKey = DecryptKey.fromPem(identityKeyPem, IdentityDecryptKey.class);
@@ -55,7 +55,7 @@ public class keyUtil {
 	
 	private void getPseudoKeys()
 	{   
-        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/PD-4.p7")) {
+        try (final InputStream is = KeyUtil.class.getResourceAsStream("/p7/PD-4.p7")) {
         	String pseudoKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
         	pDecryptKey = DecryptKey.fromPem(pseudoKeyPem, PseudonymDecryptKey.class);
@@ -66,7 +66,7 @@ public class keyUtil {
 			// TODO: handle exception
 		}
         
-        try (final InputStream is = keyUtil.class.getResourceAsStream("/p7/PC-4.p7")) {
+        try (final InputStream is = KeyUtil.class.getResourceAsStream("/p7/PC-4.p7")) {
         	String pseudoClosingKeyPem = CMS.read(getPrivateKey(), is);
             // Convert PEM to IdentityDecryptKey
         	pClosingKey = DecryptKey.fromPem(pseudoClosingKeyPem, PseudonymClosingKey.class);
@@ -77,7 +77,7 @@ public class keyUtil {
 	}
 	
 	private static PrivateKey getPrivateKey() throws Exception {
-			File file = new File(main.class.getClassLoader().getResource("private.p8").getFile());
+			File file = new File(Main.class.getClassLoader().getResource("private.p8").getFile());
     	byte[] bytesArray = FileUtils.readFileToByteArray(file);
 
       return KeyFactory.getInstance("RSA").generatePrivate(new PKCS8EncodedKeySpec(bytesArray));

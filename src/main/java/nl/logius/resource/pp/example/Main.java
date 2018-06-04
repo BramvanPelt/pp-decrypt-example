@@ -17,7 +17,7 @@ import javax.crypto.Cipher;
 import nl.logius.resource.pp.util.DecryptUtil;
 import org.apache.commons.io.FileUtils;
 
-public class main {
+public class Main {
 	
 	public static void main(String [] args)
 	{	
@@ -33,12 +33,12 @@ public class main {
 			Security.addProvider(new org.bouncycastle.jce.provider.BouncyCastleProvider());
 			
 			// laad de sleutels in het geheugen, normaal komen deze uit een keystore
-			keyUtil keys = new keyUtil(); 
+			KeyUtil keys = new KeyUtil(); 
 			
 			//simuleer een EncryptedID (ei) en EncryptedPseudonym (ep)
-      File eiFile = new File(main.class.getClassLoader().getResource("signed/900095222-2-4-I.txt").getFile());
+      File eiFile = new File(Main.class.getClassLoader().getResource("signed/900095222-2-4-I.txt").getFile());
       String ei = FileUtils.readFileToString(eiFile, "UTF-8");
-      File epFile = new File(main.class.getClassLoader().getResource("signed/900095222-2-4-P.txt").getFile());
+      File epFile = new File(Main.class.getClassLoader().getResource("signed/900095222-2-4-P.txt").getFile());
 			String ep = FileUtils.readFileToString(epFile, "UTF-8");
 			
 			//Pre-load complete, Decrypt de ei en ep
